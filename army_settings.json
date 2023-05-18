@@ -1,7 +1,8 @@
 {
-  "names": ["crutoy", "ochen_crutoy"],
+  "names": ["dawdefraf113"],
   "commandor": "gimonchik",
-  "server_host": "testQX42.aternos.me",
-  "server_port": 51378,
+  "server_host": "localhost",
+  "server_port": 7905,
+  "version": "1.12.2",
   "friends": []
 }
