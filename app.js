@@ -23,6 +23,8 @@ class BotLogic {
         this.bot.armorManager.equipAll();
         const CommandorFilter = e => e.type === 'player' && commandor === e.username;
         const player = this.bot.nearestEntity(CommandorFilter);
+        console.log(`${this.bot.entity.username} activated`);
+
         if (player) {
             this.bot.pathfinder.setGoal(new GoalFollow(player, 1), true);
         }
@@ -30,7 +32,7 @@ class BotLogic {
             this.bot.pathfinder.stop();
         }
         setInterval(() => {
-            const AttakFilter = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && (e.type === 'player' || e.type === 'mob');
+            const AttakFilter = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && (e.type === 'player' || e.type === 'mob') && e.mobType !== "Item";
             const attak = this.bot.nearestEntity(AttakFilter)
 
             if (attak && !this.bot.pathfinder.isMining() && !this.bot.pathfinder.isBuilding() && this.bot.entity.position.distanceTo(attak.position) <= 5) {
@@ -100,6 +102,5 @@ let version = file.version;
 
 for (let i = 0; i < file.names.length; i++) {
     bots.push(run(file.names[i], file.server_host, file.server_port));
-    console.log(`${file.names[i]} ready`);
 }
 Promise.all(bots);
