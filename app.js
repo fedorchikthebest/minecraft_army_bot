@@ -8,6 +8,8 @@ const armorManager = require('mineflayer-armor-manager');
 class BotLogic {
     constructor(bot) {
         this.bot = bot;
+        this.AttakMob = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.mobType !== "Item";
+        this.AttakPlayer = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.type === 'player';
     }
 
     chat_reaction = (u_name, message) => {
@@ -32,19 +34,19 @@ class BotLogic {
             this.bot.pathfinder.stop();
         }
         setInterval(() => {
-            const AttakMob = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.type === 'mob' && e.mobType !== "Item";
-            const AttakPlayer = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.type === 'player';
-            let AttakFilter = AttakMob
-            if (AttakPlayer) AttakFilter = AttakPlayer;
 
-            const attak = this.bot.nearestEntity(AttakFilter)
+            let attak = this.bot.nearestEntity(this.AttakMob);
+
+            if (this.bot.nearestEntity(this.AttakPlayer)) {
+                attak = this.bot.nearestEntity(this.AttakPlayer);
+            }
 
             if (attak && !this.bot.pathfinder.isMining() && !this.bot.pathfinder.isBuilding() && this.bot.entity.position.distanceTo(attak.position) <= 5) {
                 const sword = this.bot.inventory.items().find(item => item.name.includes('sword'))
                 if (sword) this.bot.equip(sword, 'hand');
                 const pos = attak.position;
                 this.bot.lookAt(pos);
-                this.bot.attack(attak);
+                if(attak.isValid) this.bot.attack(attak);
             }
 
             const CommandorFilter = e => e.type === 'player' && commandor === e.username;
@@ -92,7 +94,8 @@ async function run(name, host, port) {
 
     this.bot.once('spawn', bot_logic.spawn_function);
     this.bot.on('chat', bot_logic.chat_reaction);
-    this.bot.on('error', err=> console.log(err));
+    bot.on('kicked', (reason, loggedIn) => console.log(reason, loggedIn))
+    bot.on('error', err => console.log(err))
 }
 
 
