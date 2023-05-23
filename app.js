@@ -32,7 +32,11 @@ class BotLogic {
             this.bot.pathfinder.stop();
         }
         setInterval(() => {
-            const AttakFilter = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && (e.type === 'player' || e.type === 'mob') && e.mobType !== "Item";
+            const AttakMob = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.type === 'mob' && e.mobType !== "Item";
+            const AttakPlayer = e => !(e.username === commandor) && names.indexOf(e.username) === -1 && friends.indexOf(e.username) === -1 && e.type === 'player';
+            let AttakFilter = AttakMob
+            if (AttakPlayer) AttakFilter = AttakPlayer;
+
             const attak = this.bot.nearestEntity(AttakFilter)
 
             if (attak && !this.bot.pathfinder.isMining() && !this.bot.pathfinder.isBuilding() && this.bot.entity.position.distanceTo(attak.position) <= 5) {
